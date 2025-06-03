@@ -1,10 +1,10 @@
 
 "use client";
 
+import React, { useState, useEffect } from 'react'; // Import React
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useState, useEffect } from 'react';
 
 const kigaliPosition: L.LatLngExpression = [-1.9441, 30.0619]; // Kigali, Rwanda coordinates
 
@@ -21,7 +21,8 @@ const defaultIcon = L.icon({
 
 const mapContainerStyle = { height: '450px', width: '100%' };
 
-export default function AmbulanceMap() {
+// Define the component that renders the map
+const AmbulanceMapComponent = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -29,8 +30,9 @@ export default function AmbulanceMap() {
   }, []);
 
   if (!isMounted) {
-    // You can return a loading spinner here if preferred
-    return null; 
+    // Return null or a placeholder if the component isn't mounted yet
+    // The parent dynamic import handles a loading spinner, so null is fine here
+    return null;
   }
 
   return (
@@ -46,4 +48,10 @@ export default function AmbulanceMap() {
       </Marker>
     </MapContainer>
   );
-}
+};
+
+// Wrap the component with React.memo
+const AmbulanceMap = React.memo(AmbulanceMapComponent);
+AmbulanceMap.displayName = 'AmbulanceMap'; // Optional: for better debugging display names
+
+export default AmbulanceMap;
