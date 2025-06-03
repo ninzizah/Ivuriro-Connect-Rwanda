@@ -3,18 +3,7 @@
 
 import MainLayout from '@/components/layout/main-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Ambulance, Map as MapIcon, RadioTower, ActivitySquare } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const AmbulanceMap = dynamic(() => import('@/components/ambulance-map'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-[450px] bg-muted/30 rounded-lg">
-      <ActivitySquare className="h-10 w-10 animate-spin text-primary" />
-      <p className="ml-3 text-muted-foreground">Loading Map...</p>
-    </div>
-  ),
-});
+import { Ambulance, Map as MapIcon, RadioTower } from 'lucide-react';
 
 export default function AmbulanceRoutingPage() {
   return (
@@ -63,8 +52,9 @@ export default function AmbulanceRoutingPage() {
             <p className="text-sm text-muted-foreground mb-2">
               Interactive Map
             </p>
-            <div className="bg-muted/50 rounded-lg overflow-hidden max-w-2xl mx-auto border">
-              <AmbulanceMap />
+            <div className="bg-muted/50 rounded-lg p-8 border min-h-[200px] flex flex-col items-center justify-center">
+               <MapIcon className="h-12 w-12 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">Map feature currently under maintenance.</p>
             </div>
           </div>
         </CardContent>
