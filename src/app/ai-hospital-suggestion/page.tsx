@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BrainCircuit, Lightbulb, MapPin, AlertTriangle, ActivitySquare, Hospital, Clock } from "lucide-react";
+import { BrainCircuit, Lightbulb, MapPin, AlertTriangle, ActivitySquare, Hospital, Clock, ShieldAlert, Star } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -47,9 +47,26 @@ export default function AiHospitalSuggestionPage() {
       };
       const result = await suggestHospital(inputData);
       setSuggestion(result);
+
+      let toastDescription = "AI has provided a recommendation.";
+      let toastTitle = "Suggestion Ready!";
+
+      if (result.suggestionType === "ROUTINE_HOSPITAL" || result.suggestionType === "SPECIALIZED_CARE") {
+        if (result.hospitalName && result.hospitalName !== "N/A" && !result.hospitalName.toLowerCase().includes("contact emergency")) {
+          toastDescription = `AI has suggested ${result.hospitalName}.`;
+        } else {
+          toastDescription = `AI has provided guidance for specialized care. See details.`;
+        }
+      } else if (result.suggestionType === "EMERGENCY_CONTACT") {
+        toastTitle = "Urgent Health Alert!";
+        toastDescription = "AI has provided critical health instructions. Please review details immediately.";
+      }
+
       toast({
-        title: "Suggestion Ready!",
-        description: `AI has suggested ${result.hospitalName}.`,
+        title: toastTitle,
+        description: toastDescription,
+        variant: result.suggestionType === "EMERGENCY_CONTACT" ? "destructive" : "default",
+        duration: result.suggestionType === "EMERGENCY_CONTACT" ? 9000 : 5000,
       });
     } catch (e) {
       console.error("AI suggestion error:", e);
@@ -73,7 +90,7 @@ export default function AiHospitalSuggestionPage() {
           <BrainCircuit className="h-8 w-8 text-accent" />
         </div>
         <p className="text-muted-foreground">
-          Enter patient symptoms and location to get an AI-powered hospital recommendation.
+          Enter patient symptoms and location to get an AI-powered hospital or action recommendation.
         </p>
       </section>
 
@@ -81,7 +98,7 @@ export default function AiHospitalSuggestionPage() {
         <Card className="animate-slide-in-up opacity-0" style={{ animationFillMode: 'forwards', animationDelay: '0.2s' }}>
           <CardHeader>
             <CardTitle>Get Recommendation</CardTitle>
-            <CardDescription>Provide details below for an AI-driven suggestion.</CardDescription>
+            <CardDescription>Provide details below for an AI-driven suggestion. For critical or rapidly worsening conditions, always call emergency services (e.g. 114) immediately.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -93,7 +110,7 @@ export default function AiHospitalSuggestionPage() {
                     <FormItem>
                       <FormLabel>Patient Symptoms</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="e.g., chest pain, difficulty breathing, high fever" {...field} className="min-h-[100px]" />
+                        <Textarea placeholder="e.g., chest pain, difficulty breathing, high fever, unexplained rash or bleeding" {...field} className="min-h-[100px]" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -121,7 +138,7 @@ export default function AiHospitalSuggestionPage() {
                       <ActivitySquare className="mr-2 h-4 w-4 animate-spin" />
                       Getting Suggestion...
                     </>
-                  ) : "Suggest Hospital"}
+                  ) : "Suggest Action/Hospital"}
                 </Button>
               </form>
             </Form>
@@ -137,38 +154,79 @@ export default function AiHospitalSuggestionPage() {
             </Card>
           )}
           {!isLoading && suggestion && (
-            <Card className="bg-primary/5 border-primary/20 shadow-lg">
-              <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <Lightbulb className="h-8 w-8 text-primary" />
-                  <CardTitle className="text-2xl text-primary font-headline">AI Recommendation</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Suggested Hospital</h3>
-                  <p className="text-xl font-semibold text-foreground flex items-center">
-                    <Hospital className="h-5 w-5 mr-2 text-accent"/>
-                    {suggestion.hospitalName}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Reason</h3>
-                  <p className="text-foreground/90">{suggestion.reason}</p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Estimated Wait Time</h3>
-                  <p className="text-foreground/90 flex items-center">
-                     <Clock className="h-4 w-4 mr-2 text-accent"/>
-                    {suggestion.waitTime}
-                  </p>
-                </div>
-              </CardContent>
-              <CardFooter className="text-xs text-muted-foreground border-t pt-3">
-                 <AlertTriangle className="h-4 w-4 mr-2 text-yellow-500" />
-                This is an AI-generated suggestion. Always verify with medical professionals for critical decisions.
-              </CardFooter>
-            </Card>
+            <>
+              {suggestion.suggestionType === "EMERGENCY_CONTACT" && (
+                <Card className="bg-destructive/10 border-destructive shadow-lg">
+                  <CardHeader>
+                    <div className="flex items-center space-x-3">
+                      <ShieldAlert className="h-8 w-8 text-destructive" />
+                      <CardTitle className="text-2xl text-destructive font-headline">Urgent Public Health Alert!</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Assessment</h3>
+                      <p className="text-lg font-semibold text-destructive/90">{suggestion.reason}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Critical Instructions</h3>
+                      <p className="text-foreground/90 whitespace-pre-line">{suggestion.instructions}</p>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="text-xs text-destructive/80 border-t pt-3 border-destructive/30">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Follow instructions carefully. This is critical for your health and public safety. Do not delay.
+                  </CardFooter>
+                </Card>
+              )}
+
+              {(suggestion.suggestionType === "ROUTINE_HOSPITAL" || suggestion.suggestionType === "SPECIALIZED_CARE") && (
+                <Card className="bg-primary/5 border-primary/20 shadow-lg">
+                  <CardHeader>
+                    <div className="flex items-center space-x-3">
+                      {suggestion.suggestionType === "SPECIALIZED_CARE" ? <Star className="h-8 w-8 text-primary" /> : <Lightbulb className="h-8 w-8 text-primary" /> }
+                      <CardTitle className="text-2xl text-primary font-headline">
+                        {suggestion.suggestionType === "SPECIALIZED_CARE" ? "Specialized Care Recommendation" : "AI Recommendation"}
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {suggestion.hospitalName && suggestion.hospitalName !== "N/A" && !suggestion.hospitalName.toLowerCase().includes("contact emergency") && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Suggested Facility</h3>
+                        <p className="text-xl font-semibold text-foreground flex items-center">
+                          <Hospital className="h-5 w-5 mr-2 text-accent"/>
+                          {suggestion.hospitalName}
+                        </p>
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Reason / Assessment</h3>
+                      <p className="text-foreground/90">{suggestion.reason}</p>
+                    </div>
+                    {suggestion.waitTime && suggestion.waitTime !== "N/A" && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Estimated Wait Time</h3>
+                        <p className="text-foreground/90 flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-accent"/>
+                          {suggestion.waitTime}
+                        </p>
+                      </div>
+                    )}
+                    {suggestion.instructions && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Additional Instructions</h3>
+                        <p className="text-foreground/90 whitespace-pre-line">{suggestion.instructions}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                   <CardFooter className="text-xs text-muted-foreground border-t pt-3">
+                      <AlertTriangle className="h-4 w-4 mr-2 text-yellow-500" />
+                    This is an AI-generated suggestion. Always verify with medical professionals for critical decisions. If condition is urgent, call emergency services.
+                  </CardFooter>
+                </Card>
+              )}
+            </>
           )}
           {!isLoading && error && (
             <Card className="border-destructive bg-destructive/10">
@@ -194,3 +252,4 @@ export default function AiHospitalSuggestionPage() {
     </MainLayout>
   );
 }
+
