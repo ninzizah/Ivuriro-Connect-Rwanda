@@ -106,7 +106,7 @@ export default function PreRegistrationPage() {
                     <FormControl>
                       <div className="relative flex items-center">
                         <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <Input placeholder="e.g. John Doe" {...field} className="pl-10" />
+                        <Input placeholder="e.g. Shema Honore" {...field} className="pl-10" />
                       </div>
                     </FormControl>
                     <FormMessage />

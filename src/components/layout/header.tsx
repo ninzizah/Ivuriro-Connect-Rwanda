@@ -29,8 +29,8 @@ export default function Header() {
         className={cn(
           "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out",
           pathname === href
-            ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-            : "text-primary-foreground hover:bg-primary/80 hover:text-primary-foreground"
+            ? "bg-accent text-accent-foreground shadow-md hover:bg-accent/90" // Active state
+            : "text-primary-foreground hover:bg-primary/70 hover:text-primary-foreground" // Inactive state
         )}
       >
         <Icon className="mr-2 h-5 w-5" />
