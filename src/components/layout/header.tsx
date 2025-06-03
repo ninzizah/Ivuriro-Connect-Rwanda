@@ -44,7 +44,8 @@ export default function Header() {
   return (
     <header className="bg-primary text-primary-foreground shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        {/* Changed justify-between to default flex alignment */}
+        <div className="flex items-center h-16">
           <Link href="/" passHref legacyBehavior>
             <a className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
               <HeartPulse className="h-8 w-8 mr-2" />
@@ -52,8 +53,8 @@ export default function Header() {
             </a>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-2 mr-4"> {/* Added mr-4 here for spacing from the right edge */}
+          {/* Desktop Navigation: Added ml-auto to push to right, and increased mr-6 for more spacing */}
+          <nav className="hidden md:flex space-x-2 ml-auto mr-6"> 
             {navItems.map((item) => (
               <NavLink key={item.href} href={item.href} label={item.label} icon={item.icon} />
             ))}
