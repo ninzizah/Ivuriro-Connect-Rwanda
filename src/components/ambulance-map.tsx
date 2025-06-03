@@ -26,14 +26,14 @@ const AmbulanceMapComponent = () => {
 
   useEffect(() => {
     // This effect's cleanup function will run when the component unmounts.
-    // It's critical for preventing issues during HMR or fast re-renders.
+    // It's critical for preventing issues during HMR or fast re-renders in Strict Mode.
     return () => {
       if (mapRef.current) {
         mapRef.current.remove(); // Remove the Leaflet map instance
         mapRef.current = null;   // Clear the ref
       }
     };
-  }, []); // Empty dependency array ensures this runs only once on mount and once on unmount.
+  }, []); // Empty dependency array ensures this runs once on mount and its cleanup once on unmount.
 
   return (
     <MapContainer
