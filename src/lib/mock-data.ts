@@ -92,6 +92,52 @@ export const mockHospitals: Hospital[] = [
     ],
     lastUpdated: generateLastUpdated(),
   },
+  {
+    id: "ps_muhanga_5",
+    name: "Muhanga Poste de Santé",
+    location: "Muhanga",
+    generalWaitTimeMinutes: 20,
+    services: [
+      { id: "s5_1", name: "General Consultation", waitTimeMinutes: 15, lastUpdated: generateLastUpdated() },
+      { id: "s5_2", name: "Vaccination", waitTimeMinutes: 10, lastUpdated: generateLastUpdated() },
+      { id: "s5_3", name: "Basic Lab Tests", waitTimeMinutes: 30, lastUpdated: generateLastUpdated() },
+    ],
+    departments: [
+      { id: "d5_1", name: "Observation Room", totalBeds: 5, availableBeds: 2 },
+    ],
+    lastUpdated: generateLastUpdated(),
+  },
+  {
+    id: "ch_nyagatare_6",
+    name: "Nyagatare District Hospital",
+    location: "Nyagatare",
+    generalWaitTimeMinutes: 55,
+    services: [
+      { id: "s6_1", name: "General Consultation", waitTimeMinutes: 45, lastUpdated: generateLastUpdated() },
+      { id: "s6_2", name: "Maternity", waitTimeMinutes: 60, lastUpdated: generateLastUpdated() },
+      { id: "s6_3", name: "Internal Medicine", waitTimeMinutes: 70, lastUpdated: generateLastUpdated() },
+    ],
+    departments: [
+      { id: "d6_1", name: "Maternity Ward", totalBeds: 40, availableBeds: 12 },
+      { id: "d6_2", name: "General Ward", totalBeds: 90, availableBeds: 20 },
+      { id: "d6_3", name: "Pediatric Ward", totalBeds: 30, availableBeds: 5 },
+    ],
+    lastUpdated: generateLastUpdated(),
+  },
+  {
+    id: "ps_gasabo_7",
+    name: "Gasabo Health Post",
+    location: "Kigali",
+    generalWaitTimeMinutes: 25,
+    services: [
+      { id: "s7_1", name: "Outpatient Consultation", waitTimeMinutes: 20, lastUpdated: generateLastUpdated() },
+      { id: "s7_2", name: "Family Planning", waitTimeMinutes: 30, lastUpdated: generateLastUpdated() },
+    ],
+    departments: [
+      { id: "d7_1", name: "Consultation Rooms", totalBeds: 0, availableBeds: 0 }, // Poste de Santé might not have "beds" in the same way
+    ],
+    lastUpdated: generateLastUpdated(),
+  }
 ];
 
 export const formatWaitTime = (minutes: number): string => {

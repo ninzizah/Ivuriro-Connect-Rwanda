@@ -6,8 +6,8 @@ import AppProviders from '@/components/providers/app-providers';
 
 
 export const metadata: Metadata = {
-  title: 'Rwanda Health Connect',
-  description: 'National Hospital Queue & Bed Management System for Rwanda',
+  title: 'Ivuriro Connect',
+  description: 'National Hospital Queue & Bed Management System for Rwanda - Ivuriro Connect',
 };
 
 export default function RootLayout({

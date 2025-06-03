@@ -4,10 +4,7 @@ export default function Footer() {
     <footer className="bg-secondary text-secondary-foreground py-6 mt-auto shadow-inner">
       <div className="container mx-auto px-4 text-center">
         <p className="text-sm">
-          &copy; {new Date().getFullYear()} Rwanda Health Connect. All rights reserved.
-        </p>
-        <p className="text-xs mt-1">
-          Empowering Rwandan Healthcare.
+          &copy; {new Date().getFullYear()} Ivuriro Connect. All rights reserved.
         </p>
       </div>
     </footer>

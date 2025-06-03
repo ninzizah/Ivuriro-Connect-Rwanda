@@ -1,7 +1,7 @@
 
 import MainLayout from '@/components/layout/main-layout';
 import DashboardCard from '@/components/dashboard-card';
-import { Clock, CalendarPlus, BedDouble, Ambulance, BrainCircuit, BarChart3 } from 'lucide-react';
+import { Clock, CalendarPlus, BedDouble, BrainCircuit, BarChart3 } from 'lucide-react';
 
 const features = [
   {
@@ -23,12 +23,6 @@ const features = [
     icon: BedDouble,
   },
   {
-    title: "Ambulance Routing",
-    description: "Integrated emergency ambulance routing to the most suitable facility.",
-    href: "/ambulance-routing",
-    icon: Ambulance,
-  },
-  {
     title: "AI Hospital Suggestion",
     description: "Get AI-powered recommendations for the best hospital based on symptoms and conditions.",
     href: "/ai-hospital-suggestion",
@@ -47,7 +41,7 @@ export default function HomePage() {
     <MainLayout>
       <section className="text-center py-12 animate-fade-in">
         <h1 className="text-4xl font-bold font-headline text-primary mb-4">
-          Welcome to Rwanda Health Connect
+          Welcome to Ivuriro Connect
         </h1>
         <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
           Your central platform for navigating Rwanda&apos;s healthcare system efficiently. Access real-time information, schedule appointments, and more.

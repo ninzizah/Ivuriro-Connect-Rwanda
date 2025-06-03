@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HeartPulse, LayoutDashboard, Clock, CalendarPlus, BedDouble, Ambulance, BrainCircuit, Menu, X } from 'lucide-react';
+import { HeartPulse, LayoutDashboard, Clock, CalendarPlus, BedDouble, BrainCircuit, Menu, X, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -14,8 +14,8 @@ const navItems = [
   { href: '/wait-times', label: 'Wait Times', icon: Clock },
   { href: '/pre-registration', label: 'Pre-Register', icon: CalendarPlus },
   { href: '/bed-availability', label: 'Bed Availability', icon: BedDouble },
-  { href: '/ambulance-routing', label: 'Ambulance', icon: Ambulance },
   { href: '/ai-hospital-suggestion', label: 'AI Suggestion', icon: BrainCircuit },
+  { href: '/statistics', label: 'Statistics', icon: BarChart3 },
 ];
 
 export default function Header() {
@@ -46,7 +46,7 @@ export default function Header() {
           <Link href="/" passHref legacyBehavior>
             <a className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
               <HeartPulse className="h-8 w-8 mr-2 text-accent" />
-              <span className="text-xl font-bold font-headline">Rwanda Health Connect</span>
+              <span className="text-xl font-bold font-headline">Ivuriro Connect</span>
             </a>
           </Link>
 
@@ -72,7 +72,7 @@ export default function Header() {
                      <Link href="/" passHref legacyBehavior>
                         <a onClick={() => setMobileMenuOpen(false)} className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
                           <HeartPulse className="h-7 w-7 mr-2 text-accent" />
-                          <span className="text-lg font-bold font-headline">RHC</span>
+                          <span className="text-lg font-bold font-headline">Ivuriro Connect</span>
                         </a>
                       </Link>
                     <SheetClose asChild>
