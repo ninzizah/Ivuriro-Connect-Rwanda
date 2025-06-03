@@ -4,6 +4,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useState, useEffect } from 'react';
 
 const kigaliPosition: L.LatLngExpression = [-1.9441, 30.0619]; // Kigali, Rwanda coordinates
 
@@ -18,9 +19,22 @@ const defaultIcon = L.icon({
     shadowSize: [41, 41]
 });
 
+const mapContainerStyle = { height: '450px', width: '100%' };
+
 export default function AmbulanceMap() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    // You can return a loading spinner here if preferred
+    return null; 
+  }
+
   return (
-    <MapContainer center={kigaliPosition} zoom={13} scrollWheelZoom={true} style={{ height: '450px', width: '100%' }}>
+    <MapContainer center={kigaliPosition} zoom={13} scrollWheelZoom={true} style={mapContainerStyle}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
