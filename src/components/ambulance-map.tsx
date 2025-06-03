@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const kigaliPosition: L.LatLngExpression = [-1.9441, 30.0619]; // Kigali, Rwanda coordinates
+const kigaliPosition: L.LatLngExpression = [-1.9441, 30.0619];
 
 // Custom icon to avoid potential issues with default icon paths
 const defaultIcon = L.icon({
@@ -26,19 +26,19 @@ const AmbulanceMapComponent = () => {
 
   useEffect(() => {
     // Capture the map instance from the ref at the time the effect is set up.
-    const mapInstanceToClean = mapRef.current;
+    // This specific instance will be used for cleanup.
+    const mapInstanceAtMount = mapRef.current;
 
     return () => {
       // If there was a map instance when this component mounted, try to remove it.
-      if (mapInstanceToClean) {
-        mapInstanceToClean.remove();
+      if (mapInstanceAtMount) {
+        mapInstanceAtMount.remove();
       }
 
-      // If mapRef.current is the instance we just tried to remove (i.e., no new map
-      // instance has been created and assigned to the ref in the meantime),
-      // then it's safe to nullify the ref. This helps prevent the next render
-      // cycle from finding a stale instance in the ref.
-      if (mapRef.current === mapInstanceToClean) {
+      // Only nullify the ref if it's still pointing to the instance we just removed.
+      // This helps prevent issues if the ref was updated by a new mount (due to HMR/Strict Mode)
+      // before this cleanup ran.
+      if (mapRef.current === mapInstanceAtMount) {
         mapRef.current = null;
       }
     };
@@ -51,6 +51,8 @@ const AmbulanceMapComponent = () => {
       scrollWheelZoom={true}
       style={mapContainerStyle}
       whenCreated={(mapInstance) => {
+        // This callback from MapContainer gives us the map instance.
+        // We store it in the ref.
         mapRef.current = mapInstance;
       }}
     >
