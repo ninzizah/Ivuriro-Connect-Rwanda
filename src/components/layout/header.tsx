@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { HeartPulse, LayoutDashboard, Clock, CalendarPlus, BedDouble, BrainCircuit, Menu, X, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -52,14 +52,14 @@ export default function Header() {
             </a>
           </Link>
 
-          {/* Desktop Navigation: ml-auto pushes to right, respects container padding */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-2 ml-auto"> 
             {navItems.map((item) => (
               <NavLink key={item.href} href={item.href} label={item.label} icon={item.icon} />
             ))}
           </nav>
 
-          {/* Mobile Navigation Trigger: Added ml-auto */}
+          {/* Mobile Navigation Trigger */}
           <div className="md:hidden ml-auto">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -70,11 +70,13 @@ export default function Header() {
               </SheetTrigger>
               <SheetContent side="left" className="bg-primary text-primary-foreground p-4 w-64 border-none">
                 <div className="flex flex-col space-y-4">
-                  <div className="flex justify-between items-center mb-4">
+                  <SheetHeader className="flex justify-between items-center mb-4">
                      <Link href="/" passHref legacyBehavior>
                         <a onClick={() => setMobileMenuOpen(false)} className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
                           <HeartPulse className="h-7 w-7 mr-2" />
-                          <span className="text-lg font-bold font-headline">Ivuriro Connect</span>
+                          <SheetTitle asChild>
+                            <span className="text-lg font-bold font-headline">Ivuriro Connect</span>
+                          </SheetTitle>
                         </a>
                       </Link>
                     <SheetClose asChild>
@@ -83,7 +85,7 @@ export default function Header() {
                         <span className="sr-only">Close menu</span>
                       </Button>
                     </SheetClose>
-                  </div>
+                  </SheetHeader>
                   {navItems.map((item) => (
                      <NavLink key={item.href} href={item.href} label={item.label} icon={item.icon} onClick={() => setMobileMenuOpen(false)} isMobile={true} />
                   ))}
