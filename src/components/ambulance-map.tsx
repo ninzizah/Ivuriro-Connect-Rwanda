@@ -25,31 +25,24 @@ const AmbulanceMapComponent = () => {
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    // Capture the instance at the time the effect runs.
-    // This is important for the cleanup function's closure.
-    const currentMapInstance = mapRef.current;
+    // Capture the map instance from the ref at the time the effect is set up.
+    const mapInstanceToClean = mapRef.current;
 
     return () => {
-      // Use the captured instance in the cleanup.
-      if (currentMapInstance) {
-        // Check if the container still exists and has Leaflet's internal ID.
-        // This is an extra defensive check.
-        const container = currentMapInstance.getContainer();
-        if (container && (container as any)._leaflet_id) {
-          currentMapInstance.remove();
-        }
+      // If there was a map instance when this component mounted, try to remove it.
+      if (mapInstanceToClean) {
+        mapInstanceToClean.remove();
       }
-      // It's also good practice to clear the ref if this component instance
-      // is truly being disposed of, though the ref itself will be gone with the component.
-      // If mapRef.current was used to set currentMapInstance, and another effect could
-      // change mapRef.current before cleanup, this ensures we only act on the one from mount.
-      // However, with an empty dependency array, this effect (and its cleanup) are tied
-      // to this component's mount/unmount.
-      if (mapRef.current === currentMapInstance) {
+
+      // If mapRef.current is the instance we just tried to remove (i.e., no new map
+      // instance has been created and assigned to the ref in the meantime),
+      // then it's safe to nullify the ref. This helps prevent the next render
+      // cycle from finding a stale instance in the ref.
+      if (mapRef.current === mapInstanceToClean) {
         mapRef.current = null;
       }
     };
-  }, []); // Empty dependency array ensures this runs once on mount and its cleanup once on unmount.
+  }, []); // Empty dependency array ensures this runs once on mount and cleanup on unmount
 
   return (
     <MapContainer
