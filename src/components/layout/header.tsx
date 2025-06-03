@@ -44,7 +44,6 @@ export default function Header() {
   return (
     <header className="bg-primary text-primary-foreground shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        {/* Changed justify-between to default flex alignment */}
         <div className="flex items-center h-16">
           <Link href="/" passHref legacyBehavior>
             <a className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
@@ -53,15 +52,15 @@ export default function Header() {
             </a>
           </Link>
 
-          {/* Desktop Navigation: Added ml-auto to push to right, and increased mr-6 for more spacing */}
-          <nav className="hidden md:flex space-x-2 ml-auto mr-6"> 
+          {/* Desktop Navigation: ml-auto pushes to right, respects container padding */}
+          <nav className="hidden md:flex space-x-2 ml-auto"> 
             {navItems.map((item) => (
               <NavLink key={item.href} href={item.href} label={item.label} icon={item.icon} />
             ))}
           </nav>
 
-          {/* Mobile Navigation Trigger */}
-          <div className="md:hidden">
+          {/* Mobile Navigation Trigger: Added ml-auto */}
+          <div className="md:hidden ml-auto">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
