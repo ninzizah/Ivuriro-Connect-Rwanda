@@ -3,43 +3,18 @@
 
 import MainLayout from '@/components/layout/main-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Ambulance, Map as MapIcon, RadioTower } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { useEffect } from 'react';
+import { Ambulance, Map as MapIcon, RadioTower, ActivitySquare } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
-// It's good practice to ensure Leaflet's default icon paths are set up,
-// especially when using bundlers. This can be done in a useEffect.
-// If marker icons appear broken, uncomment and adjust this useEffect.
-// You might need to copy leaflet images to your public folder.
-// For example, copy 'node_modules/leaflet/dist/images/*' to 'public/leaflet-images/'
-// and then set: L.Icon.Default.imagePath = '/leaflet-images/';
-
-// A common fix for default Leaflet icons if they don't appear:
-// useEffect(() => {
-//   delete (L.Icon.Default.prototype as any)._getIconUrl;
-//   L.Icon.Default.mergeOptions({
-//     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png').default?.src || require('leaflet/dist/images/marker-icon-2x.png'),
-//     iconUrl: require('leaflet/dist/images/marker-icon.png').default?.src || require('leaflet/dist/images/marker-icon.png'),
-//     shadowUrl: require('leaflet/dist/images/marker-shadow.png').default?.src || require('leaflet/dist/images/marker-shadow.png'),
-//   });
-// }, []);
-
-
-const kigaliPosition: L.LatLngExpression = [-1.9441, 30.0619]; // Kigali, Rwanda coordinates
-
-// Custom icon to avoid potential issues with default icon paths if not configured
-const defaultIcon = L.icon({
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+const AmbulanceMap = dynamic(() => import('@/components/ambulance-map'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-[450px] bg-muted/30 rounded-lg">
+      <ActivitySquare className="h-10 w-10 animate-spin text-primary" />
+      <p className="ml-3 text-muted-foreground">Loading Map...</p>
+    </div>
+  ),
 });
-
 
 export default function AmbulanceRoutingPage() {
   return (
@@ -89,17 +64,7 @@ export default function AmbulanceRoutingPage() {
               Interactive Map
             </p>
             <div className="bg-muted/50 rounded-lg overflow-hidden max-w-2xl mx-auto border">
-              <MapContainer center={kigaliPosition} zoom={13} scrollWheelZoom={true} style={{ height: '450px', width: '100%' }}>
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker position={kigaliPosition} icon={defaultIcon}>
-                  <Popup>
-                    Kigali, Rwanda. <br /> Central dispatch point.
-                  </Popup>
-                </Marker>
-              </MapContainer>
+              <AmbulanceMap />
             </div>
           </div>
         </CardContent>
