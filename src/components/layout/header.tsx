@@ -29,8 +29,8 @@ export default function Header() {
         className={cn(
           "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out",
           pathname === href
-            ? "bg-accent text-accent-foreground shadow-md hover:bg-accent/90" // Active state
-            : "text-primary-foreground hover:bg-primary/70 hover:text-primary-foreground" // Inactive state
+            ? "bg-accent text-accent-foreground shadow-sm hover:bg-accent/90" // Active state
+            : "text-foreground hover:bg-accent/10 hover:text-accent" // Inactive state
         )}
       >
         <Icon className="mr-2 h-5 w-5" />
@@ -40,12 +40,12 @@ export default function Header() {
   );
   
   return (
-    <header className="bg-primary shadow-md sticky top-0 z-50">
+    <header className="bg-card text-card-foreground shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" passHref legacyBehavior>
-            <a className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
-              <HeartPulse className="h-8 w-8 mr-2 text-accent" />
+            <a className="flex items-center text-primary hover:text-primary/90 transition-colors">
+              <HeartPulse className="h-8 w-8 mr-2 text-primary" />
               <span className="text-xl font-bold font-headline">Ivuriro Connect</span>
             </a>
           </Link>
@@ -61,22 +61,22 @@ export default function Header() {
           <div className="md:hidden">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary/80">
+                <Button variant="ghost" size="icon" className="text-primary hover:bg-accent/10">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-primary text-primary-foreground p-4 w-64">
+              <SheetContent side="left" className="bg-card text-card-foreground p-4 w-64">
                 <div className="flex flex-col space-y-4">
                   <div className="flex justify-between items-center mb-4">
                      <Link href="/" passHref legacyBehavior>
-                        <a onClick={() => setMobileMenuOpen(false)} className="flex items-center text-primary-foreground hover:text-primary-foreground/90 transition-colors">
-                          <HeartPulse className="h-7 w-7 mr-2 text-accent" />
+                        <a onClick={() => setMobileMenuOpen(false)} className="flex items-center text-primary hover:text-primary/90 transition-colors">
+                          <HeartPulse className="h-7 w-7 mr-2 text-primary" />
                           <span className="text-lg font-bold font-headline">Ivuriro Connect</span>
                         </a>
                       </Link>
                     <SheetClose asChild>
-                       <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary/80">
+                       <Button variant="ghost" size="icon" className="text-primary hover:bg-accent/10">
                         <X className="h-6 w-6" />
                         <span className="sr-only">Close menu</span>
                       </Button>
