@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react'; // Import React and useRef
+import React, { useEffect, useRef, memo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet'; // L is the Leaflet instance
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const kigaliPosition: L.LatLngExpression = [-1.9441, 30.0619]; // Kigali, Rwanda coordinates
@@ -21,27 +21,19 @@ const defaultIcon = L.icon({
 
 const mapContainerStyle = { height: '450px', width: '100%' };
 
-// Define the component that renders the map
 const AmbulanceMapComponent = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  const mapRef = useRef<L.Map | null>(null); // Ref to store the Leaflet map instance
+  const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-
-    // Cleanup function: This will be called when the component unmounts
+    // This effect's cleanup function will run when the component unmounts.
+    // It's critical for preventing issues during HMR or fast re-renders.
     return () => {
       if (mapRef.current) {
-        mapRef.current.remove(); // Explicitly remove the map instance
+        mapRef.current.remove(); // Remove the Leaflet map instance
         mapRef.current = null;   // Clear the ref
       }
     };
-  }, []); // Empty dependency array ensures this runs once on mount and cleanup on unmount
-
-  if (!isMounted) {
-    // Return null or a placeholder if the component isn't mounted yet
-    return null;
-  }
+  }, []); // Empty dependency array ensures this runs only once on mount and once on unmount.
 
   return (
     <MapContainer
@@ -49,7 +41,9 @@ const AmbulanceMapComponent = () => {
       zoom={13}
       scrollWheelZoom={true}
       style={mapContainerStyle}
-      whenCreated={(mapInstance) => { // Callback to get the map instance
+      whenCreated={(mapInstance) => {
+        // Store the map instance in the ref.
+        // This is used by the cleanup function in useEffect.
         mapRef.current = mapInstance;
       }}
     >
@@ -66,8 +60,9 @@ const AmbulanceMapComponent = () => {
   );
 };
 
-// Wrap the component with React.memo
-const AmbulanceMap = React.memo(AmbulanceMapComponent);
+// Wrap the component with React.memo to prevent unnecessary re-renders
+// if its props (which are none in this case) haven't changed.
+const AmbulanceMap = memo(AmbulanceMapComponent);
 AmbulanceMap.displayName = 'AmbulanceMap'; // Optional: for better debugging display names
 
 export default AmbulanceMap;
