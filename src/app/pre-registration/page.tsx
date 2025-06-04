@@ -17,9 +17,11 @@ import { format } from "date-fns";
 import { CalendarIcon, CalendarPlus, User, Phone, Stethoscope, ActivitySquare } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { mockHospitals } from '@/lib/mock-data';
+import { mockHospitals } from '@/lib/mock-data'; // Assuming mock data is still used for hospital list
 import { useState, useEffect } from 'react';
-
+import { db } from '@/lib/firebaseConfig'; // Import Firestore instance
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore functions
+import { useAuth } from '@/context/AuthContext'; // Import useAuth to get user ID if needed
 
 const preRegistrationSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
@@ -37,11 +39,11 @@ const timeSlots = ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00", "14:00 - 1
 export default function PreRegistrationPage() {
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
+  const { currentUser } = useAuth(); // Get current user from Auth context
 
   useEffect(() => {
-    setIsClient(true); 
+    setIsClient(true);
   }, []);
-
 
   const form = useForm<PreRegistrationFormValues>({
     resolver: zodResolver(preRegistrationSchema),
@@ -51,20 +53,46 @@ export default function PreRegistrationPage() {
       symptoms: "",
       preferredHospitalId: "",
       preferredTime: "",
+      // preferredDate will be initialized by the calendar
     },
   });
 
   async function onSubmit(data: PreRegistrationFormValues) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(data);
-    toast({
-      title: "Registration Submitted!",
-      description: `Thank you, ${data.fullName}. Your pre-registration for ${mockHospitals.find(h => h.id === data.preferredHospitalId)?.name} on ${format(data.preferredDate, "PPP")} at ${data.preferredTime} has been received.`,
-      variant: "default",
-    });
-    form.reset();
+    // Optional: Check if user is logged in before submitting
+    // if (!currentUser) {
+    //   toast({ title: "Error", description: "You must be logged in to pre-register.", variant: "destructive" });
+    //   return;
+    // }
+
+    try {
+      // Add the pre-registration data to Firestore
+      const docRef = await addDoc(collection(db, "preregistrations"), {
+        ...data,
+        userId: currentUser ? currentUser.uid : null, // Store user ID if logged in
+        submittedAt: serverTimestamp(), // Add a server timestamp
+        status: 'pending', // Add an initial status
+        preferredDate: format(data.preferredDate, "yyyy-MM-dd") // Store date as string for consistency
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+
+      toast({
+        title: "Registration Submitted!",
+        description: `Thank you, ${data.fullName}. Your pre-registration has been received.`, // Simplified message
+        variant: "default",
+      });
+      form.reset();
+
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      toast({
+        title: "Submission Failed",
+        description: "Could not submit your pre-registration. Please try again.",
+        variant: "destructive",
+      });
+    }
   }
-  
+
   if (!isClient) {
     return (
        <MainLayout>
@@ -75,7 +103,6 @@ export default function PreRegistrationPage() {
       </MainLayout>
     );
   }
-
 
   return (
     <MainLayout>
@@ -97,6 +124,7 @@ export default function PreRegistrationPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* --- Form Fields remain the same as your previous code --- */}
               <FormField
                 control={form.control}
                 name="fullName"
@@ -231,6 +259,7 @@ export default function PreRegistrationPage() {
                   )}
                 />
               </div>
+              {/* --- End of Form Fields --- */}
 
               <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? "Submitting..." : "Submit Pre-Registration"}
@@ -242,3 +271,4 @@ export default function PreRegistrationPage() {
     </MainLayout>
   );
 }
+
